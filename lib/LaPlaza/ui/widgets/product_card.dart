@@ -6,7 +6,7 @@ class ProductCard extends StatelessWidget {
 
   ProductCard(this.product);
 
-  Data product;
+  Product product;
 
   @override
   Widget build(BuildContext context) {

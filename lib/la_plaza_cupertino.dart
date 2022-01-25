@@ -9,8 +9,6 @@ class LaPlazaCupertino extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: HomeLaPlaza(),
-
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(

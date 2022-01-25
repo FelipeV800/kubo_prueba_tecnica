@@ -4,48 +4,53 @@ import 'package:prueba_tecnica_kubo/LaPlaza/ui/screens/product_details.dart';
 import 'package:prueba_tecnica_kubo/LaPlaza/ui/widgets/product_card.dart';
 import 'package:prueba_tecnica_kubo/services/product_service.dart';
 
-class CardList extends StatefulWidget {
-  @override
-  State<CardList> createState() => _CardListState();
-}
+class CardList extends StatelessWidget {
 
-class _CardListState extends State<CardList> {
+  Function search;
   ProductService productService = ProductService();
 
-  List<Data> listData = [];
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Future<ProductModel> products = productService.getElements();
-    products.then((value) => listData = value.data ?? []);
-    setState(() {});
-  }
+  CardList(this.search, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: GridView.builder(
-        itemCount: listData.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return ProductDetails();
-                }));
-              },
-              child: ProductCard(listData[index]));
-        },
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            mainAxisSpacing: 15.0,
-            crossAxisSpacing: 25.0,
-            crossAxisCount: 2,
-            childAspectRatio: 0.7),
-        shrinkWrap: true,
-      ),
+    return FutureBuilder<ProductModel>(
+      future: productService.getElements(),
+      builder: (BuildContext context, snapshot) {
+        if(snapshot.hasData){
+          return _createBodySucceful(snapshot);
+        } else if (snapshot.hasError){
+          return Container(
+            child: Text("hay un error"),
+          );
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
+}
+
+_createBodySucceful (AsyncSnapshot<ProductModel> snapshot) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    child: GridView.builder(
+      itemCount: snapshot.data?.product?.length??0,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return ProductDetails(snapshot.data?.product?[index]??Product());
+              }));
+            },
+            child: ProductCard(snapshot.data?.product?[index]??Product()));
+      },
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisSpacing: 15.0,
+          crossAxisSpacing: 25.0,
+          crossAxisCount: 2,
+          childAspectRatio: 0.7),
+      shrinkWrap: true,
+    ),
+  );
 }

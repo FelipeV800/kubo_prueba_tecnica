@@ -1,7 +1,7 @@
 class ProductModel {
   ProductModel({
       String? code, 
-      List<Data>? data,}){
+      List<Product>? data,}){
     _code = code;
     _data = data;
 }
@@ -11,15 +11,15 @@ class ProductModel {
     if (json['data'] != null) {
       _data = [];
       json['data'].forEach((v) {
-        _data?.add(Data.fromJson(v));
+        _data?.add(Product.fromJson(v));
       });
     }
   }
   String? _code;
-  List<Data>? _data;
+  List<Product>? _data;
 
   String? get code => _code;
-  List<Data>? get data => _data;
+  List<Product>? get product => _data;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -32,8 +32,8 @@ class ProductModel {
 
 }
 
-class Data {
-  Data({
+class Product {
+  Product({
       String? categoria, 
       String? cliente, 
       String? colores, 
@@ -80,7 +80,7 @@ class Data {
     _imagen = imagen;
 }
 
-  Data.fromJson(dynamic json) {
+  Product.fromJson(dynamic json) {
     _categoria = json['categoria'];
     _cliente = json['cliente'];
     _colores = json['colores'];
